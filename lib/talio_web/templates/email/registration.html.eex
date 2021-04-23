@@ -1,0 +1,4 @@
+<strong>Welcome</strong> to Talio!
+<p>
+	Your email address is <%= @email_address %>
+</p>

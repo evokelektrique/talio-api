@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+</head>
+<body>
+	<p>Header</p>
+	<br>
+	<%= @inner_content %>
+	<br>
+	<p>Footer</p>
+</body>
+</html>

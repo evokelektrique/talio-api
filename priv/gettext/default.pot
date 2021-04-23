@@ -1,0 +1,57 @@
+## This file is a PO Template file.
+##
+## "msgid"s here are often extracted from source code.
+## Add new translations manually only if they're dynamic
+## translations that can't be statically extracted.
+##
+## Run "mix gettext.extract" to bring this file up to
+## date. Leave "msgstr"s empty as changing them here as no
+## effect: edit them in PO (.po) files instead.
+msgid ""
+msgstr ""
+
+#, elixir-format
+#: lib/talio_web/views/api/v1/session_view.ex:16
+msgid "Logged in successfully !"
+msgstr ""
+
+#, elixir-format
+#: lib/talio_web/views/api/v1/registration_view.ex:31
+msgid "Code Successfully Sent To your Email"
+msgstr ""
+
+#, elixir-format
+#: lib/talio_web/views/api/v1/session_view.ex:26
+msgid "Credential Error"
+msgstr ""
+
+#, elixir-format
+#: lib/talio/accounts/user.ex:92
+msgid "Must include at least one lowercase letter, one uppercase letter, and one digit"
+msgstr ""
+
+#, elixir-format
+#: lib/talio_web/views/api/v1/registration_view.ex:45
+#: lib/talio_web/views/api/v1/session_view.ex:23
+msgid "User not found"
+msgstr ""
+
+#, elixir-format
+#: lib/talio_web/views/api/v1/session_view.ex:33
+msgid "User email is not verified"
+msgstr ""
+
+#, elixir-format
+#: lib/talio_web/views/api/v1/registration_view.ex:48
+msgid "Invalid code"
+msgstr ""
+
+#, elixir-format
+#: lib/talio_web/views/api/v1/registration_view.ex:8
+msgid "Registration Successfull! A Verification email sent to your email address"
+msgstr ""
+
+#, elixir-format
+#: lib/talio_web/views/api/v1/registration_view.ex:17
+msgid "Your account successfully verified"
+msgstr ""

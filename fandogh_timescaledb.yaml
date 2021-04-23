@@ -1,0 +1,14 @@
+kind: InternalService
+name: timescaledb
+spec:
+  image: timescale/timescaledb:latest-pg12
+  image_pull_policy: Always
+  replicas: 1
+  env:
+    - name: POSTGRES_PASSWORD
+      value: secretpassword
+  port_mapping: 
+    - port: 5432
+      target_port: 5432
+  resources:
+    memory: 200Mi

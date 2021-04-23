@@ -1,0 +1,23 @@
+kind: ExternalService
+name: api
+spec:
+  image: talio:1.0.4
+  image_pull_policy: Always
+  replicas: 1
+  port: 4000
+  allow_http: true
+  domains:
+    - name: api.talio.ir
+  env:
+    - name: SECRET_KEY_BASE
+      value: n7CXs28hGClMC+56EgF83mcGt5AHuUBIUwzw1LcG94O1LdidFp5wtAz4FpIR6j2T
+    - name: DATABASE_HOST
+      value: timescaledb
+    - name: DATABASE_DB
+      value: talio_prod
+    - name: DATABASE_USER
+      value: postgres
+    - name: DATABASE_PASSWORD
+      value: secretpassword
+  resources:
+    memory: 200Mi

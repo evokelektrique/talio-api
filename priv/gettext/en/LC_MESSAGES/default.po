@@ -1,0 +1,58 @@
+## "msgid"s in this file come from POT (.pot) files.
+##
+## Do not add, change, or remove "msgid"s manually here as
+## they're tied to the ones in the corresponding POT file
+## (with the same domain).
+##
+## Use "mix gettext.extract --merge" or "mix gettext.merge"
+## to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: en\n"
+"Plural-Forms: nplurals=2\n"
+
+#, elixir-format
+#: lib/talio_web/views/api/v1/session_view.ex:16
+msgid "Logged in successfully !"
+msgstr ""
+
+#, elixir-format
+#: lib/talio_web/views/api/v1/registration_view.ex:31
+msgid "Code Successfully Sent To your Email"
+msgstr ""
+
+#, elixir-format
+#: lib/talio_web/views/api/v1/session_view.ex:26
+msgid "Credential Error"
+msgstr ""
+
+#, elixir-format
+#: lib/talio/accounts/user.ex:92
+msgid "Must include at least one lowercase letter, one uppercase letter, and one digit"
+msgstr ""
+
+#, elixir-format
+#: lib/talio_web/views/api/v1/registration_view.ex:45
+#: lib/talio_web/views/api/v1/session_view.ex:23
+msgid "User not found"
+msgstr ""
+
+#, elixir-format
+#: lib/talio_web/views/api/v1/session_view.ex:33
+msgid "User email is not verified"
+msgstr ""
+
+#, elixir-format
+#: lib/talio_web/views/api/v1/registration_view.ex:48
+msgid "Invalid code"
+msgstr ""
+
+#, elixir-format
+#: lib/talio_web/views/api/v1/registration_view.ex:8
+msgid "Registration Successfull! A Verification email sent to your email address"
+msgstr ""
+
+#, elixir-format
+#: lib/talio_web/views/api/v1/registration_view.ex:17
+msgid "Your account successfully verified"
+msgstr ""
