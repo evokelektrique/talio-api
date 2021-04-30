@@ -5,7 +5,13 @@ defmodule Talio.Accounts.User do
   import Ecto.Query
   import TalioWeb.Gettext
 
-  alias Talio.{Repo, Accounts.VerificationCode, Accounts.User, Accounts.ForgotPassword}
+  alias Talio.{
+    Repo,
+    Accounts.VerificationCode,
+    Accounts.User,
+    Accounts.ForgotPassword,
+    Website
+  }
 
   schema "users" do
     field :email, :string
@@ -17,6 +23,7 @@ defmodule Talio.Accounts.User do
 
     has_many :verification_codes, VerificationCode
     has_many :forgot_passwords, ForgotPassword
+    has_many :websites, Website
 
     timestamps()
   end

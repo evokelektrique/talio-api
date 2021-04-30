@@ -55,7 +55,8 @@ defmodule Talio.MixProject do
       {:hammer, "~> 6.0"},
       {:hammer_plug, "~> 2.1"},
       {:cors_plug, "~> 2.0"},
-      {:credo, "~> 1.5", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
+      {:httpoison, "~> 1.8"}
     ]
   end
 

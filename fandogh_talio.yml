@@ -1,7 +1,7 @@
 kind: ExternalService
 name: api
 spec:
-  image: talio:1.0.4
+  image: talio:1.0.5
   image_pull_policy: Always
   replicas: 1
   port: 4000

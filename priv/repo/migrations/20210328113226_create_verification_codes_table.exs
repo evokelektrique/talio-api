@@ -8,6 +8,8 @@ defmodule Talio.Repo.Migrations.CreateVerificationCodesTable do
 
   		timestamps()
   	end
+
+    create index(:verification_codes, [:code])
   end
 
   def down do

@@ -2,9 +2,9 @@ defmodule Talio.Email do
   import Bamboo.Email
   use Bamboo.Phoenix, view: TalioWeb.EmailView
 
-  @emails emails: %{
-            no_reply: "noreply@talio.ir"
-          }
+  @emails %{
+    no_reply: "noreply@talio.ir"
+  }
 
   def send_verification_code(%{to: to, subject: subject, code: code} = params) do
     new_email()

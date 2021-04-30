@@ -7,6 +7,8 @@ defmodule Talio.Repo.Migrations.CreateForgotPasswordsTable do
   		add :status, :boolean, default: false
   		add :code, :integer, null: false
   	end
+    
+    create index(:forgot_passwords, [:code])
   end
 
   def down do
