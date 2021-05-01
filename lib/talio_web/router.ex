@@ -43,8 +43,11 @@ defmodule TalioWeb.Router do
 
     scope "/v1", V1, as: :v1 do
       resources "/users", UserController, except: [:new, :edit]
+
       resources "/websites", WebsiteController, except: [:new]
       get "/websites/:id/verify", WebsiteController, :verify
+
+      resources "/categories", CategoryController, except: [:new]
     end
   end
 
