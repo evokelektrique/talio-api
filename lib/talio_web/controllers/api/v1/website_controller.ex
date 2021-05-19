@@ -1,10 +1,12 @@
 defmodule TalioWeb.API.V1.WebsiteController do
   use TalioWeb, :controller
 
-  alias Talio.{Repo, Website, Category}
+  alias Talio.{Repo, Website, Category, Plan, Transaction}
   alias Talio.Guards.Website, as: WebsiteGuard
 
   action_fallback TalioWeb.API.V1.FallbackController
+
+  plug :find_plan when action in [:create]
 
   def index(conn, _params) do
     current_user =
@@ -35,6 +37,8 @@ defmodule TalioWeb.API.V1.WebsiteController do
   end
 
   def create(conn, %{"website" => website_params, "category" => category_params}) do
+    current_user = Talio.Guardian.Plug.current_resource(conn)
+
     case Repo.get(Category, category_params["id"]) do
       nil ->
         conn
@@ -52,6 +56,10 @@ defmodule TalioWeb.API.V1.WebsiteController do
 
         case Repo.insert(changeset) do
           {:ok, website} ->
+            # Create Transaction
+            plan = conn.assigns.plan
+            transaction = create_transaction(plan, current_user, website)
+
             conn
             |> put_status(:created)
             |> render("create.json", website: website)
@@ -183,5 +191,37 @@ defmodule TalioWeb.API.V1.WebsiteController do
             end
         end
     end
+  end
+
+  # Find and assign plan to conn
+  defp find_plan(conn, _) do
+    %{"id" => plan_id} = conn.params["plan"]
+
+    case Repo.get(Plan, plan_id) do
+      nil ->
+        conn
+        |> put_status(:not_found)
+        |> put_view(TalioWeb.API.V1.PlanView)
+        |> render("error.json", reason: :plan_not_found)
+
+      plan ->
+        conn
+        |> assign(:plan, plan)
+    end
+  end
+
+  defp create_transaction(plan, user, website) do
+    transaction_expire =
+      DateTime.utc_now()
+      |> Timex.shift(months: plan.duration)
+      |> DateTime.truncate(:second)
+
+    transaction_changeset =
+      Transaction.changeset(%Transaction{expire: transaction_expire})
+      |> Ecto.Changeset.put_assoc(:plan, plan)
+      |> Ecto.Changeset.put_assoc(:user, user)
+      |> Ecto.Changeset.put_assoc(:website, website)
+
+    Repo.insert!(transaction_changeset)
   end
 end

@@ -37,18 +37,21 @@ defmodule TalioWeb.API.V1.CategoryController do
 
   def create(conn, %{"category" => category_params}) do
     changeset = Category.changeset(%Category{}, category_params)
+    current_user = Talio.Guardian.Plug.current_resource(conn)
 
-    case Repo.insert(changeset) do
-      {:ok, category} ->
-        conn
-        |> put_status(:created)
-        |> render("create.json", category: category)
+    with :ok <- Bodyguard.permit(CategoryGuard, :admin_category, current_user) do
+      case Repo.insert(changeset) do
+        {:ok, category} ->
+          conn
+          |> put_status(:created)
+          |> render("create.json", category: category)
 
-      {:error, changeset} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> put_view(TalioWeb.ChangesetView)
-        |> render("error.json", changeset: changeset)
+        {:error, changeset} ->
+          conn
+          |> put_status(:unprocessable_entity)
+          |> put_view(TalioWeb.ChangesetView)
+          |> render("error.json", changeset: changeset)
+      end
     end
   end
 

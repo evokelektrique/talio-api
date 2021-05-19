@@ -10,16 +10,26 @@ defmodule TalioWeb.API.V1.WebsiteView do
     %{data: render_one(website, WebsiteView, "website.json")}
   end
 
+  # Includes :category
   def render("website.json", %{website: website}) do
+    %{
+      website: render_one(website, WebsiteView, "single_website.json"),
+      category: %{
+        id: website.category.id,
+        name: website.category.name
+      }
+    }
+  end
+
+  # Excludes :category
+  def render("single_website.json", %{website: website}) do
     %{
       id: website.id,
       name: website.name,
       url: website.url,
       is_verified: website.is_verified,
-      category: %{
-        id: website.category.id,
-        name: website.category.name
-      }
+      inserted_at: format_time!(website.inserted_at) |> DateTime.to_unix(),
+      updated_at: format_time!(website.updated_at) |> DateTime.to_unix()
     }
   end
 

@@ -11,8 +11,8 @@ defmodule TalioWeb.Endpoint do
   ]
 
   socket "/socket", TalioWeb.UserSocket,
-    websocket: true,
-    longpoll: false
+    websocket: [connect_info: [:peer_data, :x_headers]],
+    longpoll: [connect_info: [:peer_data, :x_headers]]
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
 

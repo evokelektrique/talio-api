@@ -6,8 +6,12 @@ defmodule Talio.Website do
 
   alias Talio.{
     Category,
-    Accounts.User
+    Snapshot,
+    Accounts.User,
+    Transaction
   }
+
+  @timestamps_opts [type: :utc_datetime]
 
   schema "websites" do
     field :name, :string
@@ -16,6 +20,9 @@ defmodule Talio.Website do
 
     belongs_to :category, Category, on_replace: :nilify
     belongs_to :user, User
+    has_many :snapshots, Snapshot, on_delete: :delete_all
+
+    has_one :transaction, Transaction
 
     timestamps()
   end
@@ -25,6 +32,7 @@ defmodule Talio.Website do
     |> cast(params, [:name, :url])
     |> validate_required([:name, :url])
     |> update_change(:url, &String.downcase/1)
+    |> unique_constraint([:url, :user_id])
     |> validate_changeset()
   end
 
@@ -48,16 +56,17 @@ defmodule Talio.Website do
   end
 
   defp valid_website?(changeset) do
-    with {:ok, url} <- fetch_change(changeset, :url) do
-      uri = URI.parse(url)
+    case fetch_change(changeset, :url) do
+      {:ok, url} ->
+        uri = URI.parse(url)
 
-      if uri.scheme != nil && uri.host =~ "." do
-        changeset
-      else
-        changeset
-        |> add_error(:url, gettext("Invalid website format"))
-      end
-    else
+        if uri.scheme != nil && uri.host =~ "." do
+          changeset
+        else
+          changeset
+          |> add_error(:url, gettext("Invalid website format"))
+        end
+
       _ ->
         changeset
     end

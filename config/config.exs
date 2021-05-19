@@ -1,8 +1,13 @@
 # General application configuration
 use Mix.Config
 
+config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
+
 config :talio,
   ecto_repos: [Talio.Repo]
+
+# Migrations With Timestamp
+config :talio, Talio.Repo, migration_timestamps: [type: :utc_datetime]
 
 # Configures the endpoint
 config :talio, TalioWeb.Endpoint,
@@ -29,7 +34,7 @@ config :talio, Talio.Guardian,
 config :guardian, Guardian.DB,
   repo: Talio.Repo,
   schema_name: "guardian_tokens",
-  token_types: ["refresh_token"],
+  # token_types: ["refresh_token"],
   sweep_interval: 60
 
 # Gettext
