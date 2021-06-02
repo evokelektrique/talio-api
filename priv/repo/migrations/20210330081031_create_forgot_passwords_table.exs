@@ -12,6 +12,7 @@ defmodule Talio.Repo.Migrations.CreateForgotPasswordsTable do
   end
 
   def down do
+    drop index(:forgot_passwords, [:code])
   	drop table(:forgot_passwords)
   end
 end

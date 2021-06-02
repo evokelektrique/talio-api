@@ -3,13 +3,13 @@ defmodule Talio.Repo.Migrations.AddStatusToTransactionsTable do
 
 	def up do
 		alter table(:transactions) do
-			add :status, :integer, default: 0, null: false
+			add :status, :boolean, default: false, null: false
 		end
 	end
 
 	def down do
 		alter table(:transactions) do
-			add :status, :integer, default: 0, null: false
+			remove :status
 		end
 	end
 end

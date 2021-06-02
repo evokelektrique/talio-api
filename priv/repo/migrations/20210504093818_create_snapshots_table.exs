@@ -15,6 +15,8 @@ defmodule Talio.Repo.Migrations.CreateSnapshotsTable do
   end
 
   def down do
+    drop index(:snapshots, [:website_id])
+
   	drop table(:snapshots)
   end
 end

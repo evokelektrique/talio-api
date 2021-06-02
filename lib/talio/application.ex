@@ -15,9 +15,31 @@ defmodule Talio.Application do
       {Phoenix.PubSub, name: Talio.PubSub},
       # Start the Endpoint (http/https)
       TalioWeb.Endpoint,
-      # Start a worker by calling: Talio.Worker.start_link(arg)
-      # {Talio.Worker, arg}
-      {Guardian.DB.Token.SweeperServer, []}
+      # Guardian
+      {Guardian.DB.Token.SweeperServer, []},
+      # Nonce Cache
+      con_cache_child_spec(
+        :talio_nonce_cache,
+        :timer.seconds(1),
+        :timer.minutes(1),
+        true
+      ),
+      # Rate Limit Clicks Cache
+      con_cache_child_spec(
+        :talio_rate_limit_clicks_cache,
+        :timer.seconds(1),
+        :timer.seconds(10),
+        false
+      ),
+      # # Elements Cache
+      # con_cache_child_spec(
+      #   :talio_elements_cache,
+      #   :timer.seconds(1),
+      #   :timer.minutes(5),
+      #   true
+      # ),
+      # Rate Limit Clicks GenServer
+      Talio.RateLimiterClick
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
@@ -31,5 +53,20 @@ defmodule Talio.Application do
   def config_change(changed, _new, removed) do
     TalioWeb.Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  defp con_cache_child_spec(name, ttl_check_interval, global_ttl, touch_on_read) do
+    Supervisor.child_spec(
+      {
+        ConCache,
+        [
+          name: name,
+          ttl_check_interval: ttl_check_interval,
+          global_ttl: global_ttl,
+          touch_on_read: touch_on_read
+        ]
+      },
+      id: {ConCache, name}
+    )
   end
 end

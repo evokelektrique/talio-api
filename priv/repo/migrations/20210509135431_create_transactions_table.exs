@@ -17,10 +17,10 @@ defmodule Talio.Repo.Migrations.CreateTransactionsTable do
   end
 
   def down do
+  	drop index(:transactions, [:user_id])
+  	drop index(:transactions, [:website_id])
+  	drop index(:transactions, [:plan_id])
+    
   	drop table(:transactions)
-
-	drop index(:transactions, [:user_id])
-	drop index(:transactions, [:website_id])
-	drop index(:transactions, [:plan_id])
   end
 end

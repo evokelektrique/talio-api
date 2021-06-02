@@ -15,6 +15,7 @@ defmodule Talio.Transaction do
 
   schema "transactions" do
     field :expire, :utc_datetime
+    field :status, :boolean, default: false
 
     belongs_to :user, User
     belongs_to :website, Website
@@ -27,5 +28,10 @@ defmodule Talio.Transaction do
     transaction
     |> cast(params, @cast_params)
     |> validate_required(@required_params)
+
+    # |> check_plan_free()
+  end
+
+  def check_plan_free(changeset) do
   end
 end

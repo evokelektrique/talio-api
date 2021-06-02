@@ -55,6 +55,21 @@ config :talio, Talio.Mailer,
 config :hammer,
   backend: {Hammer.Backend.ETS, [expiry_ms: 60_000 * 60 * 4, cleanup_interval_ms: 60_000 * 10]}
 
+# MinIO
+config :ex_aws,
+  debug_requests: true,
+  region: "local"
+
+config :ex_aws, :s3, %{
+  access_key_id: "AKIAIOSFODNN7EXAMPLE",
+  secret_access_key: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+  scheme: "http://",
+  host: "localhost",
+  port: 9000,
+  region: "local",
+  bucket: "test"
+}
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"

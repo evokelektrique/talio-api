@@ -27,6 +27,7 @@ defmodule TalioWeb.API.V1.WebsiteView do
       id: website.id,
       name: website.name,
       url: website.url,
+      host: website.host,
       is_verified: website.is_verified,
       inserted_at: format_time!(website.inserted_at) |> DateTime.to_unix(),
       updated_at: format_time!(website.updated_at) |> DateTime.to_unix()

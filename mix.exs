@@ -33,7 +33,7 @@ defmodule Talio.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.5.8"},
+      {:phoenix, "~> 1.5.9"},
       {:phoenix_ecto, "~> 4.1"},
       {:ecto_sql, "~> 3.4"},
       {:postgrex, ">= 0.0.0"},
@@ -58,7 +58,12 @@ defmodule Talio.MixProject do
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:httpoison, "~> 1.8"},
       {:tzdata, "~> 1.1"},
-      {:timex, "~> 3.0"}
+      {:timex, "~> 3.0"},
+      {:con_cache, "~> 0.13"},
+      {:ex_aws, "~> 2.1"},
+      {:ex_aws_s3, "~> 2.0"},
+      {:hackney, "~> 1.9"},
+      {:sweet_xml, "~> 0.6"}
     ]
   end
 

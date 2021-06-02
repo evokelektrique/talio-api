@@ -12,6 +12,7 @@ defmodule Talio.Repo.Migrations.CreateBranchesTable do
   end
 
   def down do
+    drop index(:branches, [:snapshot_id])
   	drop table(:branches)
   end
 end

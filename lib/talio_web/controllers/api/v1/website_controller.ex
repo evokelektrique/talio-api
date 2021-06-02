@@ -216,8 +216,10 @@ defmodule TalioWeb.API.V1.WebsiteController do
       |> Timex.shift(months: plan.duration)
       |> DateTime.truncate(:second)
 
+    status = if plan.price === 0, do: true, else: false
+
     transaction_changeset =
-      Transaction.changeset(%Transaction{expire: transaction_expire})
+      Transaction.changeset(%Transaction{expire: transaction_expire, status: status})
       |> Ecto.Changeset.put_assoc(:plan, plan)
       |> Ecto.Changeset.put_assoc(:user, user)
       |> Ecto.Changeset.put_assoc(:website, website)

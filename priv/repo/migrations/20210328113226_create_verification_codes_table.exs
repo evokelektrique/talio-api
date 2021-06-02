@@ -13,6 +13,7 @@ defmodule Talio.Repo.Migrations.CreateVerificationCodesTable do
   end
 
   def down do
+    drop index(:verification_codes, [:code])
     drop table(:verification_codes)
   end
 end

@@ -7,6 +7,7 @@ defmodule Talio.Website do
   alias Talio.{
     Category,
     Snapshot,
+    Branch,
     Accounts.User,
     Transaction
   }
@@ -16,13 +17,15 @@ defmodule Talio.Website do
   schema "websites" do
     field :name, :string
     field :url, :string
+    field :host, :string
     field :is_verified, :boolean, default: false
 
     belongs_to :category, Category, on_replace: :nilify
     belongs_to :user, User
     has_many :snapshots, Snapshot, on_delete: :delete_all
+    has_many :branches, Branch, on_delete: :delete_all
 
-    has_one :transaction, Transaction
+    has_one :transaction, Transaction, on_delete: :delete_all
 
     timestamps()
   end
@@ -61,7 +64,7 @@ defmodule Talio.Website do
         uri = URI.parse(url)
 
         if uri.scheme != nil && uri.host =~ "." do
-          changeset
+          changeset |> put_change(:host, uri.host)
         else
           changeset
           |> add_error(:url, gettext("Invalid website format"))

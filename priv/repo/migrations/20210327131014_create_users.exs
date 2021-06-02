@@ -15,6 +15,7 @@ defmodule Talio.Repo.Migrations.CreateUsers do
   end
 
   def down do
+    drop index(:users, [:email])
     drop table(:users)
   end
 end

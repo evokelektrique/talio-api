@@ -1,0 +1,8 @@
+BIG_ASS_RELATIONSHIPS/MODELS:
+Website:
+	* User
+	* Plan
+		* Transaction
+	* Snapshot
+		* Branch
+			* Click

@@ -17,6 +17,8 @@ defmodule Talio.Repo.Migrations.CreateWebsitesTable do
   end
 
   def down do
+    drop index(:websites, [:user_id])
+    drop index(:websites, [:category_id])
   	drop table(:websites)
   end
 end
