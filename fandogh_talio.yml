@@ -19,5 +19,9 @@ spec:
       value: postgres
     - name: DATABASE_PASSWORD
       secret: postgres-password
+    - name: POOL_SIZE # Database Connection Pool Size
+      value: 10
+    - name: SCREENSHOT_SECRET_KEY
+      secret: screenshot-secret-key
   resources:
     memory: 200Mi

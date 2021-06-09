@@ -14,6 +14,17 @@ config :talio, TalioWeb.Endpoint,
   force_ssl: [rewrite_on: [:x_forwarded_proto]],
   server: true
 
+# Fandogh
+screenshot_secrey_key =
+  System.get_env("SCREENSHOT_SECRET_KEY") ||
+    raise "environment variable SCREENSHOT_SECRET_KEY is missing."
+
+config :talio, :screenshot, %{
+  url: %{host: "screenshot.talio.ir", port: 80, path: "/"},
+  s3: %{bucket: "screenshots"},
+  secret_key: screenshot_secrey_key
+}
+
 # cache_static_manifest: "priv/static/cache_manifest.json"
 
 # Do not print debug messages in production

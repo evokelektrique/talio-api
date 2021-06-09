@@ -52,7 +52,7 @@ defmodule Talio.Element do
     field :device, :integer
 
     belongs_to :branch, Branch
-    has_many :clicks, Click
+    has_many :clicks, Click, on_delete: :delete_all
 
     timestamps()
   end

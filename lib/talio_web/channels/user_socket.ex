@@ -7,8 +7,11 @@ defmodule TalioWeb.UserSocket do
 
   import Ecto.Query
 
-  ## Channels
-  channel "click:*", TalioWeb.ClickChannel
+  # 
+  # Channels
+  # 
+  channel "click:public", TalioWeb.ClickChannel
+  channel "branch:*", TalioWeb.BranchChannel
 
   @impl true
   def connect(%{"website" => website_params} = _params, socket, connect_info) do
@@ -24,8 +27,6 @@ defmodule TalioWeb.UserSocket do
           left_join: plan in assoc(transaction, :plan),
           preload: [transaction: {transaction, plan: plan}]
       )
-
-    IO.inspect(website)
 
     case website do
       nil ->
@@ -47,17 +48,15 @@ defmodule TalioWeb.UserSocket do
               where: snapshot.path == ^website_params["path"]
           )
 
-        # Increment Page View
+        # Increase Snapshot's Page View
         add_page_view(user_id, snapshot)
-
-        # Check website limits
-        validate_website_limits(website, snapshot)
 
         socket =
           socket
           |> assign(:website, website)
           |> assign(:snapshot, snapshot)
           |> assign(:talio_user_id, user_id)
+          |> assign(:origin_host, connect_info.uri.host)
 
         {:ok, socket}
     end
@@ -75,13 +74,12 @@ defmodule TalioWeb.UserSocket do
   end
 
   defp add_page_view(talio_user_id, snapshot) do
-    page_view_changeset =
-      PageView.changeset(%PageView{}, %{talio_user_id: talio_user_id})
-      |> Ecto.Changeset.put_assoc(:snapshot, snapshot)
-      |> Repo.insert()
+    PageView.changeset(%PageView{}, %{talio_user_id: talio_user_id})
+    |> Ecto.Changeset.put_assoc(:snapshot, snapshot)
+    |> Repo.insert()
   end
 
-  defp count_page_views(snapshot_id) do
+  defp count_snapshot_page_views(snapshot_id) do
     Repo.one(
       from page_view in PageView,
         join: snapshot in Snapshot,
@@ -90,8 +88,10 @@ defmodule TalioWeb.UserSocket do
     )
   end
 
-  def validate_website_limits(website, snapshot) do
-    snapshot_page_views = count_page_views(snapshot.id)
-    website_plan_limits = website.transaction.plan.limits
+  # Currently we only calculate and validate Snapshots "Page Views"
+  def validate_snapshot_limits(website, snapshot) do
+    snapshot_page_views = count_snapshot_page_views(snapshot.id)
+    snapshot_limits = website.transaction.plan.limits["snapshot"]
+    snapshot_limits["page_views"] >= snapshot_page_views
   end
 end

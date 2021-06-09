@@ -17,6 +17,8 @@ defmodule Talio.Application do
       TalioWeb.Endpoint,
       # Guardian
       {Guardian.DB.Token.SweeperServer, []},
+      # Oban (Job Process)
+      {Oban, oban_config()},
       # Nonce Cache
       con_cache_child_spec(
         :talio_nonce_cache,
@@ -31,16 +33,19 @@ defmodule Talio.Application do
         :timer.seconds(10),
         false
       ),
-      # # Elements Cache
-      # con_cache_child_spec(
-      #   :talio_elements_cache,
-      #   :timer.seconds(1),
-      #   :timer.minutes(5),
-      #   true
-      # ),
+      # Branches Cache
+      con_cache_child_spec(
+        :talio_branches_cache,
+        :timer.seconds(1),
+        :timer.minutes(5),
+        true
+      ),
       # Rate Limit Clicks GenServer
       Talio.RateLimiterClick
     ]
+
+    # Attach Oban's Logger
+    :ok = Oban.Telemetry.attach_default_logger()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
@@ -68,5 +73,10 @@ defmodule Talio.Application do
       },
       id: {ConCache, name}
     )
+  end
+
+  # Conditionally disable queues or plugins here.
+  defp oban_config do
+    Application.fetch_env!(:talio, Oban)
   end
 end

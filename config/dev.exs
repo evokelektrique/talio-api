@@ -55,3 +55,10 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+# Fandogh
+config :talio, :screenshot, %{
+  url: %{host: "localhost", port: 3000, path: "/"},
+  s3: %{bucket: "screenshots"},
+  secret_key: "development_secret_key"
+}

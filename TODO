@@ -9,3 +9,6 @@ BIG_ASS_TODO_LIST:
 - Clicks
 
 + Remove Validating Nonce, Power Inefficient
+
+
+- Take Screenshot From 3 Device Type [mobile, tablet, desktop] in click_channel line 89

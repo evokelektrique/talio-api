@@ -55,20 +55,25 @@ config :talio, Talio.Mailer,
 config :hammer,
   backend: {Hammer.Backend.ETS, [expiry_ms: 60_000 * 60 * 4, cleanup_interval_ms: 60_000 * 10]}
 
-# MinIO
+## MinIO
 config :ex_aws,
   debug_requests: true,
   region: "local"
 
+# S3
 config :ex_aws, :s3, %{
-  access_key_id: "AKIAIOSFODNN7EXAMPLE",
-  secret_access_key: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+  access_key_id: "minioadmin",
+  secret_access_key: "minioadmin",
   scheme: "http://",
   host: "localhost",
-  port: 9000,
-  region: "local",
-  bucket: "test"
+  port: 9000
 }
+
+# Oban (Job Process)
+config :talio, Oban,
+  repo: Talio.Repo,
+  plugins: [{Oban.Plugins.Pruner, max_age: 600}],
+  queues: [snapshots: 1]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

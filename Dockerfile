@@ -50,6 +50,4 @@ USER nobody:nobody
 
 ENV HOME=/app
 
-# RUN ["bin/livechat", "eval", "Livechat.Release.migrate"]
-# CMD ["bin/livechat", "start"]
 CMD ["bash", "/app/entrypoint.sh"]

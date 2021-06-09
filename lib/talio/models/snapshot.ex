@@ -11,18 +11,21 @@ defmodule Talio.Snapshot do
   }
 
   @types %{
-    0 => gettext("Dynamic"),
-    1 => gettext("Static")
+    0 => gettext("Static"),
+    1 => gettext("Dynamic")
   }
 
   schema "snapshots" do
+    ## Types:
+    # 0: Static
+    # 1: Dynamic
     field :type, :integer, default: 0
     field :status, :integer, default: 0
     field :path, :string
     field :name, :string
 
     belongs_to :website, Website
-    has_many :branches, Branch
+    has_many :branches, Branch, on_delete: :delete_all
 
     timestamps()
   end
