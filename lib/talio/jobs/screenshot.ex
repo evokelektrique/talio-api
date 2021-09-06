@@ -1,24 +1,45 @@
 defmodule Talio.Jobs.Screenshot do
-  use Oban.Worker, queue: :snapshots, max_attempts: 5
+  use Oban.Worker,
+    queue: :snapshots,
+    max_attempts: 3,
+    unique: [period: 300, keys: [:key]]
+
+  alias Talio.{Repo, Branch, Screenshot}
 
   require Logger
 
   @config Application.fetch_env!(:talio, :screenshot)
 
   @impl Oban.Worker
-  def perform(%Oban.Job{args: %{"key" => key, "options" => options} = _args}) do
-    case Talio.Screenshot.take(options) do
+  def perform(%Oban.Job{
+        args: %{"key" => key, "options" => options, "screenshot_id" => screenshot_id} = _args
+      }) do
+    screenshot = Repo.get(Screenshot, screenshot_id)
+
+    case Talio.Helpers.Screenshot.take(options) do
       {:ok, image} ->
         binary = image[:image]
         filename = key <> ".jpeg"
 
+        # Change Screenshot 'status' column to 'Completed'
+        screenshot_params = %{
+          # Completed
+          status: 1
+        }
+
+        screenshot
+        |> Screenshot.changeset(screenshot_params)
+        |> Ecto.Changeset.change()
+        |> Repo.update!()
+
         # Uplaod Image To MinIO Server
-        Talio.Storage.upload(@config.s3.bucket, filename, binary)
+        Talio.Helpers.Storage.upload(@config.s3.bucket, filename, binary)
+
         :ok
 
       {:error, reason} ->
         Logger.error(reason)
-        {:error, "Error In Screenshot"}
+        {:error, "Error In Screenshot: #{inspect(reason)}"}
     end
   end
 
@@ -27,12 +48,31 @@ defmodule Talio.Jobs.Screenshot do
   #   %{kind: _, reason: reason, stacktrace: _} = unsaved_error
   #   Logger.error(reason)
   #   trunc(10)
-  #   # case reason do
-  #   #   %MyApp.ApiError{status: 429} -> @five_minutes
-  #   #   _ -> 
-  #   # end
   # end
 
   @impl Oban.Worker
-  def timeout(_job), do: :timer.minutes(2)
+  def timeout(%Job{args: %{"options" => options, "screenshot_id" => screenshot_id} = _args}) do
+    # screenshot = Repo.get(Screenshot, screenshot_id)
+
+    # screenshot_params = %{
+    #   # Completed
+    #   status: 2
+    # }
+
+    # screenshot
+    # |> Screenshot.changeset(screenshot_params)
+    # |> Ecto.Changeset.change()
+    # |> Repo.update!()
+
+    # IO.inspect(args)
+    # branch = Repo.get(Branch, options["branch_id"])
+
+    # # Change Branch screenshot_status to "Failed"
+    # branch
+    # |> Branch.changeset(%{screenshot_status: 3})
+    # |> Ecto.Changeset.change()
+    # |> Repo.update()
+
+    :timer.minutes(2)
+  end
 end

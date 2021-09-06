@@ -13,8 +13,12 @@ defmodule Talio.Branch do
     Repo,
     Website,
     Snapshot,
-    Element
+    Element,
+    Screenshot,
+    Click
   }
+
+  @required_params [:fingerprint]
 
   schema "branches" do
     field :fingerprint, :string
@@ -22,14 +26,16 @@ defmodule Talio.Branch do
     belongs_to :snapshot, Snapshot
     belongs_to :website, Website
     has_many :elements, Element, on_delete: :delete_all
+    has_many :screenshots, Screenshot, on_delete: :delete_all
+    has_many :clicks, Click, on_delete: :delete_all
 
     timestamps()
   end
 
   def changeset(branch, params \\ %{}) do
     branch
-    |> cast(params, [:fingerprint])
-    |> validate_required([:fingerprint])
+    |> cast(params, @required_params)
+    |> validate_required(@required_params)
   end
 
   def find_or_create(website, snapshot, find_attrs \\ [], create_attrs \\ %{}) do
@@ -48,30 +54,24 @@ defmodule Talio.Branch do
     case snapshot.type do
       0 ->
         if total_branches == 0 || is_nil(branch) do
-          branch =
-            %Branch{}
-            |> changeset(create_attrs)
-            |> put_assoc(:website, website)
-            |> put_assoc(:snapshot, snapshot)
-            |> Repo.insert!()
-
-          {:created, branch}
+          %Branch{}
+          |> changeset(create_attrs)
+          |> put_assoc(:website, website)
+          |> put_assoc(:snapshot, snapshot)
+          |> Repo.insert!()
         else
-          {:found, branch}
+          branch
         end
 
       1 ->
         if branch === nil do
-          branch =
-            %Branch{}
-            |> changeset(create_attrs)
-            |> put_assoc(:website, website)
-            |> put_assoc(:snapshot, snapshot)
-            |> Repo.insert!()
-
-          {:created, branch}
+          %Branch{}
+          |> changeset(create_attrs)
+          |> put_assoc(:website, website)
+          |> put_assoc(:snapshot, snapshot)
+          |> Repo.insert!()
         else
-          {:found, branch}
+          branch
         end
     end
   end
@@ -83,9 +83,28 @@ defmodule Talio.Branch do
     key = "#{snapshot.id}_#{branch.fingerprint}_#{device_type}"
     bucket = config.s3.bucket
 
-    # Insert Job
-    %{key: key, options: options}
-    |> Talio.Jobs.Screenshot.new()
-    |> Oban.insert()
+    # Create screenshot statuses
+    screenhsot_find_params = [:device]
+
+    screenhsot_create_params = %{
+      device: device_type,
+      # In Queue
+      status: 0
+    }
+
+    screenshot =
+      Screenshot.find_or_create(
+        branch.id,
+        screenhsot_find_params,
+        screenhsot_create_params,
+        branch
+      )
+
+    if screenshot.status === 0 do
+      # Insert Job
+      %{key: key, options: options, screenshot_id: screenshot.id}
+      |> Talio.Jobs.Screenshot.new()
+      |> Oban.insert()
+    end
   end
 end

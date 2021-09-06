@@ -52,7 +52,6 @@ defmodule Talio.Element do
     field :device, :integer
 
     belongs_to :branch, Branch
-    has_many :clicks, Click, on_delete: :delete_all
 
     timestamps()
   end
@@ -63,40 +62,40 @@ defmodule Talio.Element do
     |> validate_required(@required_params)
   end
 
-  # GET OR FIND OR CREATE
-  def get_or_store(branch, snapshot, payload) do
-    key = generate_key(snapshot, branch, payload["element"])
-    IO.inspect(key)
-    find_attrs = [:website_id, :css_path]
+  # # GET OR FIND OR CREATE
+  # def get_or_store(branch, snapshot, payload) do
+  #   key = generate_key(snapshot, branch, payload["element"])
+  #   IO.inspect(key)
+  #   find_attrs = [:website_id, :css_path]
 
-    create_attrs = %{
-      width: payload["element"]["width"],
-      height: payload["element"]["height"],
-      top: payload["element"]["top"],
-      right: payload["element"]["right"],
-      bottom: payload["element"]["bottom"],
-      left: payload["element"]["left"],
-      device: payload["metadata"]["device"],
-      x: payload["element"]["x"],
-      y: payload["element"]["y"],
-      path: payload["element"]["path"],
-      tag_name: payload["element"]["tag_name"]
-    }
+  #   create_attrs = %{
+  #     width: payload["element"]["width"],
+  #     height: payload["element"]["height"],
+  #     top: payload["element"]["top"],
+  #     right: payload["element"]["right"],
+  #     bottom: payload["element"]["bottom"],
+  #     left: payload["element"]["left"],
+  #     device: payload["metadata"]["device"],
+  #     x: payload["element"]["x"],
+  #     y: payload["element"]["y"],
+  #     path: payload["element"]["path"],
+  #     tag_name: payload["element"]["tag_name"]
+  #   }
 
-    element = ConCache.get(:talio_elements_cache, key)
-    IO.inspect("ELEMENT")
-    IO.inspect(element)
+  #   element = ConCache.get(:talio_elements_cache, key)
+  #   IO.inspect("ELEMENT")
+  #   IO.inspect(element)
 
-    if element === nil do
-      new_element = find_or_create(branch, find_attrs, create_attrs)
+  #   if element === nil do
+  #     new_element = find_or_create(branch, find_attrs, create_attrs)
 
-      ConCache.put(:talio_elements_cache, key, fn ->
-        new_element
-      end)
-    else
-      element
-    end
-  end
+  #     ConCache.put(:talio_elements_cache, key, fn ->
+  #       new_element
+  #     end)
+  #   else
+  #     element
+  #   end
+  # end
 
   def find_or_create(branch, find_attrs \\ [], create_attrs \\ %{}) do
     filters = Map.take(create_attrs, find_attrs) |> Map.to_list()
@@ -120,9 +119,9 @@ defmodule Talio.Element do
     end
   end
 
-  defp generate_key(snapshot, branch, element) do
-    "#{snapshot.website_id}-#{branch.fingerprint}-#{:erlang.phash2(element["path"])}"
-  end
+  # defp generate_key(snapshot, branch, element) do
+  #   "#{snapshot.website_id}-#{branch.fingerprint}-#{:erlang.phash2(element["path"])}"
+  # end
 
   def type!(type) do
     @device_types[type]

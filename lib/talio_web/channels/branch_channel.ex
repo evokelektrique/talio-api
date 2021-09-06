@@ -32,7 +32,7 @@ defmodule TalioWeb.BranchChannel do
   # 
 
   def handle_in("refresh_nonce", _payload, socket) do
-    nonce = Talio.generate_nonce(@nonce_length)
+    nonce = Talio.generate_nonce()
     ConCache.get_or_store(:talio_nonce_cache, socket.assigns.talio_user_id, fn -> nonce end)
 
     {:reply, {:ok, %{nonce: nonce}}, socket}
@@ -41,25 +41,23 @@ defmodule TalioWeb.BranchChannel do
   def handle_in("store_branch", payload, socket) do
     send(self(), {:validate_nonce, payload})
 
-    case Branch.find_or_create(
-           socket.assigns.website,
-           socket.assigns.snapshot,
-           [:fingerprint],
-           %{fingerprint: to_string(payload["fingerprint"])}
-         ) do
-      {:found, branch} ->
-        # Store Branch Into Cache
-        ConCache.put(:talio_branches_cache, payload["fingerprint"], fn -> branch end)
-        {:reply, :ok, socket}
+    # Store Branch Into Cache
+    branch =
+      ConCache.get_or_store(:talio_branches_cache, payload["fingerprint"], fn ->
+        Branch.find_or_create(
+          socket.assigns.website,
+          socket.assigns.snapshot,
+          [:fingerprint],
+          %{fingerprint: to_string(payload["fingerprint"])}
+        )
+      end)
 
-      {:created, branch} ->
-        # Store Branch Into Cache
-        ConCache.put(:talio_branches_cache, payload["fingerprint"], fn -> branch end)
+    # Take Screenshot From Different Devices
+    # if branch.screenshot_status === 0 do
+    socket |> take_screenshots(branch)
+    # end
 
-        # Take Screenshot From Different Devices
-        socket |> take_screenshots(branch)
-        {:reply, :ok, socket}
-    end
+    {:reply, :ok, socket}
   end
 
   # 
@@ -99,14 +97,14 @@ defmodule TalioWeb.BranchChannel do
   # Validate Necessary Conditions
   def handle_info(:validate_website, socket) do
     # If Website/Snapshot Not Found, Terminate User Connection
-    unless socket.assigns.website || socket.assigns.snapshot do
-      Logger.warning("What?")
+    if is_nil(socket.assigns.website) ||
+         is_nil(socket.assigns.snapshot) ||
+         is_nil(socket.assigns.origin_host) do
       send(self(), :end_session)
-    end
-
-    # Check Origin URL
-    unless socket.assigns.origin_host === socket.assigns.website.host do
-      send(self(), :end_session)
+    else
+      # Check Origin URL
+      # socket.assigns.origin_host === socket.assigns.website.host 
+      if !socket.assigns.website.is_verified, do: send(self(), :end_session)
     end
 
     {:noreply, socket}
@@ -126,9 +124,12 @@ defmodule TalioWeb.BranchChannel do
   # Take Screenshot From Different Devices
   defp take_screenshots(socket, branch) do
     Enum.each(0..2, fn device_type ->
+      # IO.inspect(socket.assigns.snapshot.path)
+
       Branch.take_screenshot(socket.assigns.snapshot, branch, %{
         quality: 70,
         url: socket.assigns.website.url <> socket.assigns.snapshot.path,
+        branch_id: branch.id,
         device_type: device_type,
         timeout: 120_000,
         recv_timeout: 120_000

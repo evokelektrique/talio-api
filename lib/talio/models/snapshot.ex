@@ -20,6 +20,7 @@ defmodule Talio.Snapshot do
     # 0: Static
     # 1: Dynamic
     field :type, :integer, default: 0
+    ## Statuses: Think about it with zana
     field :status, :integer, default: 0
     field :path, :string
     field :name, :string

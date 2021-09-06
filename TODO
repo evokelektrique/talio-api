@@ -11,4 +11,24 @@ BIG_ASS_TODO_LIST:
 + Remove Validating Nonce, Power Inefficient
 
 
-- Take Screenshot From 3 Device Type [mobile, tablet, desktop] in click_channel line 89
++ Take Screenshot From 3 Device Type [mobile, tablet, desktop] in click_channel line 89
+
+
+
+
+- Create Unique Constraint for elements[path:branch_id:device]
+
+	defmodule Talio.Repo.Migrations.AddPathDeviceBranchIdUniqueIndexToElementsTable do
+	  use Ecto.Migration
+
+	  def up do
+	    create index(:elements, [:path, :branch_id, :device], unique: true)
+	  end
+
+	  def down do
+	    drop index(:elements, [:path, :branch_id, :device], unique: true)
+	  end
+	end
+
+
+change clicks indexes and rollback to it and clean up stuff

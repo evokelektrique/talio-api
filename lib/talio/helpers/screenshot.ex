@@ -1,4 +1,4 @@
-defmodule Talio.Screenshot do
+defmodule Talio.Helpers.Screenshot do
   @doc """
   Talio Screenshot
   """
@@ -20,9 +20,11 @@ defmodule Talio.Screenshot do
       |> Map.put(:query, URI.encode_query(args))
       |> to_string
 
-    Logger.warning(args)
-
-    case HTTPoison.get(url, [], recv_timeout: args[:recv_timeout], timeout: args[:timeout]) do
+    # Timeouts don't work here, Idk why?
+    # case HTTPoison.get(url, [], recv_timeout: args[:recv_timeout], timeout: args[:timeout]) do
+    # This looks fine to me tho
+    # 
+    case HTTPoison.get(url, [], recv_timeout: 120_000, timeout: 120_000) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         Logger.info("Screenshot Taken From #{args["url"]}")
         {:ok, image: body}
@@ -36,6 +38,7 @@ defmodule Talio.Screenshot do
         {:error, body}
 
       {:error, %HTTPoison.Error{reason: reason}} ->
+        Logger.error("TIMEOUT REASON?")
         Logger.error(reason)
         {:error, reason}
     end

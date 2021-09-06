@@ -6,6 +6,8 @@ defmodule TalioWeb.API.V1.SnapshotController do
   # So we use WebsiteGuard instead of SnapshotGuard
   alias Talio.Guards.Website, as: WebsiteGuard
 
+  import Ecto.Query
+
   action_fallback TalioWeb.API.V1.FallbackController
 
   plug :find_website
@@ -33,7 +35,9 @@ defmodule TalioWeb.API.V1.SnapshotController do
     with :ok <- Bodyguard.permit(WebsiteGuard, :user_website, current_user, website) do
       website = website |> Repo.preload(:snapshots)
 
-      case Repo.get(Snapshot, snapshot_id) do
+      query = from snapshot in Snapshot, where: [website_id: ^website.id, id: ^snapshot_id]
+
+      case Repo.one(query) do
         nil ->
           conn
           |> put_status(:not_found)

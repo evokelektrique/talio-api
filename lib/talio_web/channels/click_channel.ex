@@ -26,36 +26,41 @@ defmodule TalioWeb.ClickChannel do
     # with :ok <- Talio.RateLimiterClick.tick(socket.assigns.talio_user_id) do
     #   Logger.debug("Store Click !")
     # end
-    element_find_attrs = [:path, :device, :tag_name]
 
-    element_create_attrs = %{
-      width: payload["element"]["width"],
-      height: payload["element"]["height"],
-      top: payload["element"]["top"],
-      right: payload["element"]["right"],
-      bottom: payload["element"]["bottom"],
-      left: payload["element"]["left"],
-      device: payload["metadata"]["device"],
-      x: payload["element"]["x"],
-      y: payload["element"]["y"],
-      path: payload["element"]["path"],
-      tag_name: payload["element"]["tag_name"]
-    }
-
+    # element_find_attrs = [:path, :device, :tag_name]
+    # element_create_attrs = %{
+    #   width: payload["element"]["width"],
+    #   height: payload["element"]["height"],
+    #   top: payload["element"]["top"],
+    #   right: payload["element"]["right"],
+    #   bottom: payload["element"]["bottom"],
+    #   left: payload["element"]["left"],
+    #   device: payload["metadata"]["device"],
+    #   x: payload["element"]["x"],
+    #   y: payload["element"]["y"],
+    #   path: payload["element"]["path"],
+    #   tag_name: payload["element"]["tag_name"]
+    # }
     branch = ConCache.get(:talio_branches_cache, payload["branch"]["fingerprint"])
-
-    element = Element.find_or_create(branch.(), element_find_attrs, element_create_attrs)
+    # element = Element.find_or_create(branch.(), element_find_attrs, element_create_attrs)
 
     click_create_attrs = %{
       x: payload["click"]["x"],
       y: payload["click"]["y"],
-      talio_user_id: socket.assigns.talio_user_id
+      talio_user_id: socket.assigns.talio_user_id,
+      path: payload["element"]["path"],
+      device: payload["metadata"]["device"]
     }
 
-    %Click{}
-    |> Click.changeset(click_create_attrs)
-    |> Ecto.Changeset.put_assoc(:element, element)
-    |> Repo.insert()
+    # IO.inspect(branch)
+    # IO.inspect(branch.())
+
+    if !is_nil(branch) do
+      %Click{}
+      |> Click.changeset(click_create_attrs)
+      |> Ecto.Changeset.put_assoc(:branch, branch)
+      |> Repo.insert()
+    end
 
     {:noreply, socket}
   end

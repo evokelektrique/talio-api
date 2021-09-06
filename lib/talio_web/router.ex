@@ -37,6 +37,13 @@ defmodule TalioWeb.Router do
     end
   end
 
+  # Custom Authorized Scope
+  scope "/internals", TalioWeb.Internals, as: :internals do
+    pipe_through [:api]
+
+    resources "/elements", ElementsController, except: [:new, :index, :show, :delete]
+  end
+
   # Authorized Scope
   scope "/", TalioWeb.API, as: :api do
     pipe_through [:api, :authorized]
@@ -47,7 +54,13 @@ defmodule TalioWeb.Router do
       get "/websites/:id/verify", WebsiteController, :verify
 
       resources "/websites", WebsiteController, except: [:new] do
-        resources "/snapshots", SnapshotController, except: [:new]
+        resources "/snapshots", SnapshotController, except: [:new] do
+          get "/branches/:branch_id/elements/:device", BranchController, :elements
+          get "/branches/:branch_id/clicks/:device", BranchController, :clicks
+          # resources "/branches", BranchController do
+          #   get "/clicks", BranchController, :clicks
+          # end
+        end
       end
 
       resources "/categories", CategoryController, except: [:new]

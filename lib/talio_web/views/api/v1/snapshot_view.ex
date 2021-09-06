@@ -18,7 +18,7 @@ defmodule TalioWeb.API.V1.SnapshotView do
       path: snapshot.path,
       status: snapshot.status,
       type: Talio.Snapshot.get_type(snapshot.type),
-      branches: snapshot.branches,
+      branches: render_many(snapshot.branches, TalioWeb.API.V1.BranchView, "branch.json"),
       website: render_one(website, TalioWeb.API.V1.WebsiteView, "single_website.json"),
       inserted_at: snapshot.inserted_at
     }

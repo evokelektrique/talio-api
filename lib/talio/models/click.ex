@@ -5,17 +5,24 @@ defmodule Talio.Click do
   import TalioWeb.Gettext
 
   alias Talio.{
-    Element
+    Element,
+    Branch
   }
 
-  @required_params [:x, :y, :talio_user_id]
+  @required_params [:x, :y, :talio_user_id, :path, :device]
 
   schema "clicks" do
     field :x, :integer
     field :y, :integer
     field :talio_user_id, :integer
+    field :path, :string
+    ## Device Types:
+    # 0 => Desktop
+    # 1 => Tablet
+    # 2 => Mobile
+    field :device, :integer
 
-    belongs_to :element, Element
+    belongs_to :branch, Branch
 
     timestamps()
   end
@@ -24,7 +31,6 @@ defmodule Talio.Click do
     click
     |> cast(params, @required_params)
     |> validate_required(@required_params)
-    |> unique_constraint([:x, :talio_user_id])
-    |> unique_constraint([:y, :talio_user_id])
+    |> unique_constraint([:x, :y, :talio_user_id, :device])
   end
 end

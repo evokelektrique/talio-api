@@ -8,7 +8,7 @@ defmodule Talio do
   """
   @nonce_length 32
 
-  def generate_nonce(length) do
+  def generate_nonce(length \\ @nonce_length) do
     length
     |> :crypto.strong_rand_bytes()
     |> Base.url_encode64()

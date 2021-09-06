@@ -1,4 +1,4 @@
-defmodule Talio.Storage do
+defmodule Talio.Helpers.Storage do
   @doc """
   S3 Object Storage Helper
   """

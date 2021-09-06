@@ -44,8 +44,8 @@ defmodule Talio.Application do
       Talio.RateLimiterClick
     ]
 
-    # Attach Oban's Logger
-    :ok = Oban.Telemetry.attach_default_logger()
+    # # Attach Oban's Logger
+    # :ok = Oban.Telemetry.attach_default_logger()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

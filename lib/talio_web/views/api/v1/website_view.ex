@@ -29,8 +29,10 @@ defmodule TalioWeb.API.V1.WebsiteView do
       url: website.url,
       host: website.host,
       is_verified: website.is_verified,
-      inserted_at: format_time!(website.inserted_at) |> DateTime.to_unix(),
-      updated_at: format_time!(website.updated_at) |> DateTime.to_unix()
+      inserted_at: website.inserted_at,
+      updated_at: website.updated_at
+      # inserted_at: format_time!(website.inserted_at) |> DateTime.to_unix(),
+      # updated_at: format_time!(website.updated_at) |> DateTime.to_unix()
     }
   end
 

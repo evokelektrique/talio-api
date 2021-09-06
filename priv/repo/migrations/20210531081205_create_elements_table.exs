@@ -11,7 +11,7 @@ defmodule Talio.Repo.Migrations.CreateElementsTable do
   		add :left, 		:decimal, null: false
   		add :x, 		  :decimal, null: false
   		add :y, 		  :decimal, null: false
-  		add :path, 		:string, null: false
+  		add :path, 		:text, null: false
   		add :tag_name,:string, null: false
   		## Device Types:
   		# 0 => Desktop

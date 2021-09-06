@@ -3,9 +3,9 @@ defmodule Talio.Repo.Migrations.CreateCategoriesTable do
 
   def up do
   	create table(:categories) do
-		add :name, :string, null: false
-		
-		timestamps()
+  		add :name, :string, null: false
+  		
+  		timestamps()
   	end
   end
 

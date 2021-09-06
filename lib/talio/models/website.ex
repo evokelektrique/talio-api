@@ -12,7 +12,7 @@ defmodule Talio.Website do
     Transaction
   }
 
-  @timestamps_opts [type: :utc_datetime]
+  # @timestamps_opts [type: :utc_datetime]
 
   schema "websites" do
     field :name, :string
@@ -49,7 +49,11 @@ defmodule Talio.Website do
 
   # Captures the talio.js script tag in the body
   def matched?(body) do
-    Regex.match?(~r/<script.*?src='(.*?).(talio.js)'/, body)
+    # Regex.match?(~r/<script.*?src='(.*?).(talio.js)'/, body)
+    Regex.scan(~r/<script\b[^>]*><\/script\b[^>]*>/, body)
+    |> List.flatten()
+    |> Enum.filter(fn s -> s =~ "/talio.js" end)
+    |> length > 0
   end
 
   defp validate_changeset(changeset) do

@@ -35,6 +35,7 @@ defmodule TalioWeb.UserSocket do
           |> assign(:website, nil)
           |> assign(:snapshot, nil)
           |> assign(:talio_user_id, user_id)
+          |> assign(:origin_host, nil)
 
         {:ok, socket}
 
@@ -49,7 +50,7 @@ defmodule TalioWeb.UserSocket do
           )
 
         # Increase Snapshot's Page View
-        add_page_view(user_id, snapshot)
+        unless is_nil(snapshot), do: add_page_view(user_id, snapshot)
 
         socket =
           socket
@@ -58,6 +59,7 @@ defmodule TalioWeb.UserSocket do
           |> assign(:talio_user_id, user_id)
           |> assign(:origin_host, connect_info.uri.host)
 
+        # IO.inspect(snapshot)
         {:ok, socket}
     end
   end
@@ -89,6 +91,10 @@ defmodule TalioWeb.UserSocket do
   end
 
   # Currently we only calculate and validate Snapshots "Page Views"
+  def validate_snapshot_limits(_website, snapshot) when is_nil(snapshot) do
+    :snapshot_not_found
+  end
+
   def validate_snapshot_limits(website, snapshot) do
     snapshot_page_views = count_snapshot_page_views(snapshot.id)
     snapshot_limits = website.transaction.plan.limits["snapshot"]
