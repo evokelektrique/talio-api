@@ -1,4 +1,4 @@
-defmodule Talio.Repo.Migrations.CreateUsers do
+defmodule Talio.Repo.Migrations.CreateUsersTable do
   use Ecto.Migration
 
   def up do
@@ -7,6 +7,7 @@ defmodule Talio.Repo.Migrations.CreateUsers do
       add :password_hash, :string
       add :email, :string
       add :role, :integer, default: 1, null: false
+      add :is_verified, :boolean, default: false
 
       timestamps()
     end

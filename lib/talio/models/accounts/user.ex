@@ -16,7 +16,7 @@ defmodule Talio.Accounts.User do
   schema "users" do
     field :email, :string
     field :full_name, :string
-    field :role, :integer, default: 1
+    field :is_admin, :integer, default: 0
     field :password, :string, virtual: true
     field :password_hash, :string
     field :is_verified, :boolean, default: false
@@ -73,12 +73,17 @@ defmodule Talio.Accounts.User do
               {:error, :invalid_code}
 
             code ->
-              {:ok, user} =
-                user
-                |> change(%{is_verified: true})
-                |> Repo.update()
+              # Check expiration
+              if code.is_expired do
+                {:error, :expired_code}
+              else
+                {:ok, user} =
+                  user
+                  |> change(%{is_verified: true})
+                  |> Repo.update()
 
-              {:ok, user}
+                {:ok, user}
+              end
           end
         end
     end

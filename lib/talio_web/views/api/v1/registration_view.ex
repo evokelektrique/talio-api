@@ -51,6 +51,9 @@ defmodule TalioWeb.API.V1.RegistrationView do
 
       :invalid_code ->
         %{status: reason, message: gettext("Invalid code")}
+
+      :expired_code ->
+        %{status: reason, message: gettext("Expired code")}
     end
   end
 end

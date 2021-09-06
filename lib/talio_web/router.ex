@@ -37,13 +37,6 @@ defmodule TalioWeb.Router do
     end
   end
 
-  # Custom Authorized Scope
-  scope "/internals", TalioWeb.Internals, as: :internals do
-    pipe_through [:api]
-
-    resources "/elements", ElementsController, except: [:new, :index, :show, :delete]
-  end
-
   # Authorized Scope
   scope "/", TalioWeb.API, as: :api do
     pipe_through [:api, :authorized]

@@ -7,6 +7,7 @@ defmodule Talio.Repo.Migrations.CreateTransactionsTable do
   		add :website_id, references(:websites), null: false
   		add :plan_id, references(:plans), null: false
   		add :expire, :naive_datetime, null: false
+      add :status, :boolean, default: false, null: false
 
   		timestamps()
   	end

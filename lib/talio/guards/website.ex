@@ -4,7 +4,7 @@ defmodule Talio.Guards.Website do
   alias Talio.Accounts.User
 
   # Admins can list anything
-  def authorize(:user_website, %User{role: 0} = _user, _params), do: :ok
+  def authorize(:user_website, %User{is_admin: 1} = _user, _params), do: :ok
 
   # Users can list their own websites
   def authorize(:user_website, %User{id: user_id} = _user, %{user_id: user_id} = _params),

@@ -23,6 +23,8 @@ defmodule Talio.Helpers.Screenshot do
     # Timeouts don't work here, Idk why?
     # case HTTPoison.get(url, [], recv_timeout: args[:recv_timeout], timeout: args[:timeout]) do
     # This looks fine to me tho
+    # Update: Yeah it looks fine when we use static numbers/timeouts,
+    # maybe Oban does not serialize it correctly idk
     # 
     case HTTPoison.get(url, [], recv_timeout: 120_000, timeout: 120_000) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->

@@ -5,6 +5,8 @@ defmodule Talio.Accounts.VerificationCode do
 
   schema "verification_codes" do
     field :code, :integer
+    field :is_expired, :boolean, default: false
+
     belongs_to :user, User
 
     timestamps()

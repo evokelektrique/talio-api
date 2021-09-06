@@ -9,6 +9,7 @@ defmodule Talio.Helpers.Storage do
     query_params = [{"ACL", "public-read"}]
 
     presign_options = [
+      # We are self hosting it, we do not use Amazon AWS
       virtual_host: false,
       query_params: query_params
     ]

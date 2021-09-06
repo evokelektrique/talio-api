@@ -4,7 +4,7 @@ defmodule Talio.Guards.Category do
   alias Talio.Accounts.User
 
   # Admins can list anything
-  def authorize(:admin_category, %User{role: 0} = _user, _params), do: :ok
+  def authorize(:admin_category, %User{is_admin: 1} = _user, _params), do: :ok
 
   # Otherwise, denied
   def authorize(:admin_category, _user, _params), do: :error
