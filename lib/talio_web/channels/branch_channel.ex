@@ -5,7 +5,8 @@ defmodule TalioWeb.BranchChannel do
 
   alias Talio.{
     Repo,
-    Branch
+    Branch,
+    Snapshot
   }
 
   def join("branch:public", _message, socket) do
@@ -15,13 +16,19 @@ defmodule TalioWeb.BranchChannel do
   def join("branch:" <> fingerprint, _params, socket) do
     send(self(), :validate_website)
 
-    unless TalioWeb.UserSocket.validate_snapshot_limits(
-             socket.assigns.website,
-             socket.assigns.snapshot
-           ) do
-      send(self(), :end_session)
-    end
+    # End the socket connection if Snapshot has 
+    # reached its limitation (Don't need it on MVP)
 
+    # unless TalioWeb.UserSocket.validate_snapshot_limits(
+    #          socket.assigns.website,
+    #          socket.assigns.snapshot
+    #        ) do
+    #   # Status 1, TODO: Think about it with zana
+    #   change_status(socket.assigns.snapshot, 1)
+    #   send(self(), :end_session)
+    # end
+
+    send(self(), :initialize_website)
     send(self(), :initialize_user)
 
     {:ok, socket}
@@ -53,9 +60,7 @@ defmodule TalioWeb.BranchChannel do
       end)
 
     # Take Screenshot From Different Devices
-    # if branch.screenshot_status === 0 do
     socket |> take_screenshots(branch)
-    # end
 
     {:reply, :ok, socket}
   end
@@ -75,6 +80,18 @@ defmodule TalioWeb.BranchChannel do
     push(socket, "initialize_user", %{
       talio_user_id: socket.assigns.talio_user_id,
       nonce: cached_nonce
+    })
+
+    {:noreply, socket}
+  end
+
+  # Send User a breif information about the website
+  def handle_info(:initialize_website, socket) do
+    is_repsonsive =
+      unless is_nil(socket.assigns.website), do: socket.assigns.website.is_responsive, else: true
+
+    push(socket, "initialize_website", %{
+      is_responsive: is_repsonsive
     })
 
     {:noreply, socket}
@@ -122,18 +139,36 @@ defmodule TalioWeb.BranchChannel do
   #
 
   # Take Screenshot From Different Devices
-  defp take_screenshots(socket, branch) do
-    Enum.each(0..2, fn device_type ->
-      # IO.inspect(socket.assigns.snapshot.path)
+  defp take_screenshots(socket, {:ok, branch} = _branch) do
+    unless is_nil(branch) do
+      Enum.each(0..2, fn device_type ->
+        Branch.take_screenshot(socket.assigns.snapshot, branch, %{
+          quality: 70,
+          url: socket.assigns.website.url <> socket.assigns.snapshot.path,
+          branch_id: branch.id,
+          device_type: device_type,
+          timeout: 120_000,
+          recv_timeout: 120_000
+        })
+      end)
+    end
+  end
 
-      Branch.take_screenshot(socket.assigns.snapshot, branch, %{
-        quality: 70,
-        url: socket.assigns.website.url <> socket.assigns.snapshot.path,
-        branch_id: branch.id,
-        device_type: device_type,
-        timeout: 120_000,
-        recv_timeout: 120_000
-      })
-    end)
+  # TODO: Could create a notification / alert for it
+  defp change_status(snapshot, status \\ 0) do
+    update_changeset =
+      snapshot
+      |> Snapshot.status_changeset(%{status: status})
+      |> Ecto.Changeset.change()
+
+    case Repo.update(update_changeset) do
+      {:ok, snapshot} ->
+        IO.inspect(snapshot)
+
+      {:error, changeset} ->
+        # TODO: Could create a notification / alert for it
+        IO.inspect(changeset)
+        false
+    end
   end
 end

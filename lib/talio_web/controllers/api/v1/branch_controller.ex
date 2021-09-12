@@ -8,6 +8,26 @@ defmodule TalioWeb.API.V1.BranchController do
 
   action_fallback TalioWeb.API.V1.FallbackController
 
+  # Get branch and its relative screenshots by its ID
+  def index(conn, %{"branch_id" => branch_id}) do
+    branch = Repo.get(Branch, branch_id) |> Repo.preload(:screenshots)
+
+    case branch do
+      branch ->
+        conn
+        |> put_status(:ok)
+        |> put_view(TalioWeb.API.V1.BranchView)
+        |> render("index.json", %{branch: branch})
+
+      _ ->
+        conn
+        |> put_status(:not_found)
+        |> put_view(TalioWeb.ErrorView)
+        |> render("404.json")
+    end
+  end
+
+  # Get all clicks relative to the device ID
   def clicks(
         conn,
         %{"website_id" => website_id, "branch_id" => branch_id, "device" => device} = _params
@@ -69,43 +89,4 @@ defmodule TalioWeb.API.V1.BranchController do
       end
     end
   end
-
-  # def index(conn, _params) do
-  #   users = Accounts.list_users()
-  #   current_user = Talio.Guardian.Plug.current_resource(conn)
-
-  #   with :ok <- Bodyguard.permit(BranchGuard, :list_users, current_user) do
-  #     render(conn, "index.json", users: users)
-  #   end
-  # end
-
-  # def create(conn, %{"user" => user_params}) do
-  #   with {:ok, %Branch{} = user} <- Accounts.create_user(user_params) do
-  #     conn
-  #     |> put_status(:created)
-  #     |> put_resp_header("location", Routes.user_path(conn, :show, user))
-  #     |> render("show.json", user: user)
-  #   end
-  # end
-
-  # def show(conn, %{"id" => id}) do
-  #   user = Accounts.get_user(id)
-  #   render(conn, "show.json", user: user)
-  # end
-
-  # def update(conn, %{"id" => id, "user" => user_params}) do
-  #   user = Accounts.get_user(id)
-
-  #   with {:ok, %Branch{} = user} <- Accounts.update_user(user, user_params) do
-  #     render(conn, "show.json", user: user)
-  #   end
-  # end
-
-  # def delete(conn, %{"id" => id}) do
-  #   user = Accounts.get_user(id)
-
-  #   with {:ok, %Branch{}} <- Accounts.delete_user(user) do
-  #     send_resp(conn, :no_content, "")
-  #   end
-  # end
 end

@@ -15,6 +15,9 @@ defmodule Talio.Screenshot do
   @required_params [:status, :device]
 
   schema "screenshots" do
+    # Screenshot status:
+    # 0: In queue
+    # 1: Completed
     field :status, :integer, default: 0
     field :device, :integer, null: false
 

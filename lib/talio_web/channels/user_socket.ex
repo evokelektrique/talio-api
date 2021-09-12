@@ -81,6 +81,7 @@ defmodule TalioWeb.UserSocket do
     |> Repo.insert()
   end
 
+  # TODO: Make it a cache, Code a page_views for each snapshot
   defp count_snapshot_page_views(snapshot_id) do
     Repo.one(
       from page_view in PageView,
@@ -98,6 +99,8 @@ defmodule TalioWeb.UserSocket do
   def validate_snapshot_limits(website, snapshot) do
     snapshot_page_views = count_snapshot_page_views(snapshot.id)
     snapshot_limits = website.transaction.plan.limits["snapshot"]
-    snapshot_limits["page_views"] >= snapshot_page_views
+    IO.inspect(snapshot_limits)
+    IO.inspect(snapshot_page_views)
+    snapshot_limits["page_views"] > snapshot_page_views
   end
 end

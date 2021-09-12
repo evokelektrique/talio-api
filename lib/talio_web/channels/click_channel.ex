@@ -28,6 +28,7 @@ defmodule TalioWeb.ClickChannel do
     # end
 
     # element_find_attrs = [:path, :device, :tag_name]
+
     # element_create_attrs = %{
     #   width: payload["element"]["width"],
     #   height: payload["element"]["height"],
@@ -41,27 +42,33 @@ defmodule TalioWeb.ClickChannel do
     #   path: payload["element"]["path"],
     #   tag_name: payload["element"]["tag_name"]
     # }
-    branch = ConCache.get(:talio_branches_cache, payload["branch"]["fingerprint"])
-    # element = Element.find_or_create(branch.(), element_find_attrs, element_create_attrs)
 
-    click_create_attrs = %{
-      x: payload["click"]["x"],
-      y: payload["click"]["y"],
-      talio_user_id: socket.assigns.talio_user_id,
-      path: payload["element"]["path"],
-      device: payload["metadata"]["device"]
-    }
+    case ConCache.get(:talio_branches_cache, payload["branch"]["fingerprint"]) do
+      {:ok, branch} ->
+        # element = Element.find_or_create(branch, element_find_attrs, element_create_attrs)
 
-    # IO.inspect(branch)
-    # IO.inspect(branch.())
+        click_create_attrs = %{
+          x: payload["click"]["x"],
+          y: payload["click"]["y"],
+          talio_user_id: socket.assigns.talio_user_id,
+          path: payload["element"]["path"],
+          device: payload["metadata"]["device"]
+        }
 
-    if !is_nil(branch) do
-      %Click{}
-      |> Click.changeset(click_create_attrs)
-      |> Ecto.Changeset.put_assoc(:branch, branch)
-      |> Repo.insert()
+        # TODO: use unless
+        if !is_nil(branch) do
+          IO.inspect(click_create_attrs)
+
+          %Click{}
+          |> Click.changeset(click_create_attrs)
+          |> Ecto.Changeset.put_assoc(:branch, branch)
+          |> Repo.insert()
+        end
+
+        {:noreply, socket}
+
+      _ ->
+        {:noreply, socket}
     end
-
-    {:noreply, socket}
   end
 end

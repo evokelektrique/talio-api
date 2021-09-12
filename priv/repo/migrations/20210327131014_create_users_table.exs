@@ -6,7 +6,7 @@ defmodule Talio.Repo.Migrations.CreateUsersTable do
       add :full_name, :string
       add :password_hash, :string
       add :email, :string
-      add :role, :integer, default: 1, null: false
+      add :is_admin, :integer, default: 0, null: false
       add :is_verified, :boolean, default: false
 
       timestamps()

@@ -18,6 +18,7 @@ defmodule Talio.Website do
     field :name, :string
     field :url, :string
     field :host, :string
+    field :is_responsive, :boolean, default: true
     field :is_verified, :boolean, default: false
 
     belongs_to :category, Category, on_replace: :nilify
@@ -32,7 +33,7 @@ defmodule Talio.Website do
 
   def changeset(website, params \\ %{}) do
     website
-    |> cast(params, [:name, :url])
+    |> cast(params, [:name, :url, :is_responsive])
     |> validate_required([:name, :url])
     |> update_change(:url, &String.downcase/1)
     |> unique_constraint([:url, :user_id])

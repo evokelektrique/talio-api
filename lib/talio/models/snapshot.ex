@@ -39,6 +39,14 @@ defmodule Talio.Snapshot do
     |> unique_constraint([:path, :website_id])
   end
 
+  # Changeset for changing status, because the default `changeset`
+  # does not `cast` it for users
+  def status_changeset(snapshot, params \\ %{}) do
+    snapshot
+    |> changeset
+    |> cast(params, [:status])
+  end
+
   def get_type(type), do: @types[type]
 
   defp validate_changeset(changeset) do

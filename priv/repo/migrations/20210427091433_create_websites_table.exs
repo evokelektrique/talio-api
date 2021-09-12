@@ -8,6 +8,7 @@ defmodule Talio.Repo.Migrations.CreateWebsitesTable do
   		add :name, :string, null: false
       add :host, :string, null: false
   		add :url, :string, null: false
+      add :is_responsive, :boolean, default: true
   		add :is_verified, :boolean, default: false, null: false
 
   		timestamps()

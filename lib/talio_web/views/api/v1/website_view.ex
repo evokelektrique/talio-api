@@ -28,6 +28,7 @@ defmodule TalioWeb.API.V1.WebsiteView do
       name: website.name,
       url: website.url,
       host: website.host,
+      is_responsive: website.is_responsive,
       is_verified: website.is_verified,
       inserted_at: website.inserted_at,
       updated_at: website.updated_at

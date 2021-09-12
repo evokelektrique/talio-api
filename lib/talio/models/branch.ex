@@ -43,6 +43,7 @@ defmodule Talio.Branch do
     query = from(b in Branch, where: ^filters)
     branch = Repo.one(query)
 
+    # Reason: Snapshot type (static, dynamic)
     total_branches =
       Repo.one(
         from branch in Branch,
@@ -58,9 +59,9 @@ defmodule Talio.Branch do
           |> changeset(create_attrs)
           |> put_assoc(:website, website)
           |> put_assoc(:snapshot, snapshot)
-          |> Repo.insert!()
+          |> Repo.insert()
         else
-          branch
+          {:ok, branch}
         end
 
       1 ->
@@ -69,9 +70,9 @@ defmodule Talio.Branch do
           |> changeset(create_attrs)
           |> put_assoc(:website, website)
           |> put_assoc(:snapshot, snapshot)
-          |> Repo.insert!()
+          |> Repo.insert()
         else
-          branch
+          {:ok, branch}
         end
     end
   end
@@ -106,5 +107,15 @@ defmodule Talio.Branch do
       |> Talio.Jobs.Screenshot.new()
       |> Oban.insert()
     end
+  end
+
+  # Check if branch screenshots are all complete 
+  def is_screenshot_complete!(screenshot) do
+    query =
+      from screenshot in Talio.Screenshot,
+        where: screenshot.status == 0,
+        select: count(screenshot.id)
+
+    if Repo.all(query) |> List.first() > 0, do: false, else: true
   end
 end

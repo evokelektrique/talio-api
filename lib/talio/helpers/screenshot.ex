@@ -1,7 +1,8 @@
 defmodule Talio.Helpers.Screenshot do
-  @doc """
+  @moduledoc """
   Talio Screenshot
   """
+  @moduledoc since: "0.9.0"
 
   require Logger
 
@@ -21,7 +22,7 @@ defmodule Talio.Helpers.Screenshot do
       |> to_string
 
     # Timeouts don't work here, Idk why?
-    # case HTTPoison.get(url, [], recv_timeout: args[:recv_timeout], timeout: args[:timeout]) do
+    # `case HTTPoison.get(url, [], recv_timeout: args[:recv_timeout], timeout: args[:timeout]) do`
     # This looks fine to me tho
     # Update: Yeah it looks fine when we use static numbers/timeouts,
     # maybe Oban does not serialize it correctly idk
@@ -40,8 +41,7 @@ defmodule Talio.Helpers.Screenshot do
         {:error, body}
 
       {:error, %HTTPoison.Error{reason: reason}} ->
-        Logger.error("TIMEOUT REASON?")
-        Logger.error(reason)
+        Logger.error("TIMEOUT REASON? OR MAYBE SERVER IS SHUTDOWN?")
         {:error, reason}
     end
   end

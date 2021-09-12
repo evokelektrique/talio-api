@@ -44,7 +44,7 @@ defmodule TalioWeb.API.V1.SnapshotController do
           |> render("error.json", reason: :snapshot_not_found)
 
         snapshot ->
-          snapshot = snapshot |> Repo.preload(:branches)
+          snapshot = snapshot |> Repo.preload(branches: :screenshots)
 
           conn
           |> put_status(:ok)

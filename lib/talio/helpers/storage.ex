@@ -29,6 +29,18 @@ defmodule Talio.Helpers.Storage do
     S3.put_object(bucket, destination, contents) |> ExAws.request!()
   end
 
+  @doc """
+  Determine if a file exists or no by given destination and bucket.
+
+  Returns `:ok` or `:error` on not found.
+
+  ## Examples 
+
+    iex> Talio.Helpers.Storage.exists?("screenshots", "1_2639816132_2.jpeg")
+    :ok
+
+  """
+  @doc since: "0.9.0"
   def exists?(bucket, destination) do
     case S3.get_object(bucket, destination) |> ExAws.request() do
       {:error, _reason} -> :error

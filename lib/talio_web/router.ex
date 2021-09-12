@@ -48,6 +48,7 @@ defmodule TalioWeb.Router do
 
       resources "/websites", WebsiteController, except: [:new] do
         resources "/snapshots", SnapshotController, except: [:new] do
+          get "/branches/:branch_id", BranchController, :index
           get "/branches/:branch_id/elements/:device", BranchController, :elements
           get "/branches/:branch_id/clicks/:device", BranchController, :clicks
           # resources "/branches", BranchController do
