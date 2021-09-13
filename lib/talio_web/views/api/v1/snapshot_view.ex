@@ -17,7 +17,8 @@ defmodule TalioWeb.API.V1.SnapshotView do
       name: snapshot.name,
       path: snapshot.path,
       status: snapshot.status,
-      # type: Talio.Snapshot.get_type(snapshot.type),
+      # # Let zana decide what language he wants to use
+      # type: Talio.Snapshot.get_type(snapshot.type), 
       type: snapshot.type,
       branches: render_many(snapshot.branches, TalioWeb.API.V1.BranchView, "branch.json"),
       website: render_one(website, TalioWeb.API.V1.WebsiteView, "single_website.json"),

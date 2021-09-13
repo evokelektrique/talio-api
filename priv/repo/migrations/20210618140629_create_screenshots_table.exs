@@ -8,6 +8,8 @@ defmodule Talio.Repo.Migrations.CreateScreenshotsTable do
       # 1: Complete
       add :status, :integer, default: 0, null: false
       add :device, :integer, null: false
+      # S3 filename key
+      add :key, :string, null: false
 
       add :branch_id, references(:branches, on_delete: :delete_all), null: false
 

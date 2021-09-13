@@ -1,0 +1,9 @@
+{
+  "swagger": "2.0",
+  "paths": {},
+  "info": {
+    "version": "0.9",
+    "title": "Talio"
+  },
+  "definitions": {}
+}

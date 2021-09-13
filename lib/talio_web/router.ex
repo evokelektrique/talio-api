@@ -51,6 +51,9 @@ defmodule TalioWeb.Router do
           get "/branches/:branch_id", BranchController, :index
           get "/branches/:branch_id/elements/:device", BranchController, :elements
           get "/branches/:branch_id/clicks/:device", BranchController, :clicks
+
+          post "/screenshots/get_image", ScreenshotController, :get_image
+
           # resources "/branches", BranchController do
           #   get "/clicks", BranchController, :clicks
           # end
@@ -60,6 +63,16 @@ defmodule TalioWeb.Router do
       resources "/categories", CategoryController, except: [:new]
       resources "/plans", PlanController, except: [:new]
     end
+  end
+
+  # Swagger docs
+  def swagger_info do
+    %{
+      info: %{
+        version: "0.9",
+        title: "Talio"
+      }
+    }
   end
 
   # Enables LiveDashboard only for development

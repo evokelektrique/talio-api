@@ -79,10 +79,10 @@ defmodule Talio.Branch do
 
   # Enqueue Screenshot Job
   def take_screenshot(snapshot, branch, options) do
-    config = Application.fetch_env!(:talio, :screenshot)
+    # Screenshot device
     device_type = Map.get(options, :device_type)
-    key = "#{snapshot.id}_#{branch.fingerprint}_#{device_type}"
-    bucket = config.s3.bucket
+    # S3 Filename key
+    key = Screenshot.get_s3_key(snapshot.id, branch.fingerprint, device_type)
 
     # Create screenshot statuses
     screenhsot_find_params = [:device]
@@ -90,7 +90,9 @@ defmodule Talio.Branch do
     screenhsot_create_params = %{
       device: device_type,
       # In Queue
-      status: 0
+      status: 0,
+      # S3 Filename key
+      key: key
     }
 
     screenshot =

@@ -1,14 +1,16 @@
 defmodule TalioWeb.API.V1.BranchController do
   use TalioWeb, :controller
 
-  alias Talio.{Accounts, Repo, Branch, Element, Click}
+  alias Talio.{Repo, Branch, Element, Click}
   alias Talio.Guards.Website, as: WebsiteGuard
+  alias Talio.Guards.Branch, as: BranchGuard
 
   import Ecto.Query
 
   action_fallback TalioWeb.API.V1.FallbackController
 
   # Get branch and its relative screenshots by its ID
+  # TODO: Create user permission (Guard)
   def index(conn, %{"branch_id" => branch_id}) do
     branch = Repo.get(Branch, branch_id) |> Repo.preload(:screenshots)
 

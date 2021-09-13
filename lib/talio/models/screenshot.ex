@@ -12,7 +12,7 @@ defmodule Talio.Screenshot do
     Repo
   }
 
-  @required_params [:status, :device]
+  @required_params [:status, :device, :key]
 
   schema "screenshots" do
     # Screenshot status:
@@ -20,6 +20,8 @@ defmodule Talio.Screenshot do
     # 1: Completed
     field :status, :integer, default: 0
     field :device, :integer, null: false
+    # S3 Filename Key
+    field :key, :string, null: false
 
     belongs_to :branch, Branch
 
@@ -55,5 +57,12 @@ defmodule Talio.Screenshot do
     else
       screenshot
     end
+  end
+
+  @doc """
+    Generate screenshot filename key stored in S3 Server
+  """
+  def get_s3_key(snapshot_id, fingerprint, device) do
+    "#{snapshot_id}_#{fingerprint}_#{device}"
   end
 end
