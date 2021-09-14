@@ -50,8 +50,7 @@ defmodule Talio.Website do
 
   # Captures the talio.js script tag in the body
   def matched?(body) do
-    # Regex.match?(~r/<script.*?src='(.*?).(talio.js)'/, body)
-    Regex.scan(~r/<script\b[^>]*><\/script\b[^>]*>/, body)
+    Regex.scan(~r/<script[\s\S]*?>[\s\S]*?<\/script>/, body)
     |> List.flatten()
     |> Enum.filter(fn s -> s =~ "/talio.js" end)
     |> length > 0
@@ -63,6 +62,7 @@ defmodule Talio.Website do
     |> valid_website?
   end
 
+  # Check website URL has a valid scheme
   defp valid_website?(changeset) do
     case fetch_change(changeset, :url) do
       {:ok, url} ->
@@ -71,8 +71,7 @@ defmodule Talio.Website do
         if uri.scheme != nil && uri.host =~ "." do
           changeset |> put_change(:host, uri.host)
         else
-          changeset
-          |> add_error(:url, gettext("Invalid website format"))
+          changeset |> add_error(:url, gettext("Invalid website format"))
         end
 
       _ ->

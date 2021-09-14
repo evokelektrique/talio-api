@@ -169,6 +169,7 @@ defmodule TalioWeb.BranchChannel do
     case Repo.update(update_changeset) do
       {:ok, snapshot} ->
         # IO.inspect(snapshot)
+        true
 
       {:error, changeset} ->
         # TODO: Could create a notification / alert for it
