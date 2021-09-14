@@ -99,8 +99,8 @@ defmodule TalioWeb.UserSocket do
   def validate_snapshot_limits(website, snapshot) do
     snapshot_page_views = count_snapshot_page_views(snapshot.id)
     snapshot_limits = website.transaction.plan.limits["snapshot"]
-    IO.inspect(snapshot_limits)
-    IO.inspect(snapshot_page_views)
+    # IO.inspect(snapshot_limits)
+    # IO.inspect(snapshot_page_views)
     snapshot_limits["page_views"] > snapshot_page_views
   end
 end

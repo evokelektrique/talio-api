@@ -91,7 +91,12 @@ defmodule TalioWeb.BranchChannel do
       unless is_nil(socket.assigns.website), do: socket.assigns.website.is_responsive, else: true
 
     push(socket, "initialize_website", %{
-      is_responsive: is_repsonsive
+      website: %{
+        is_responsive: is_repsonsive
+      },
+      snapshot: %{
+        type: socket.assigns.snapshot.type
+      }
     })
 
     {:noreply, socket}
@@ -163,11 +168,10 @@ defmodule TalioWeb.BranchChannel do
 
     case Repo.update(update_changeset) do
       {:ok, snapshot} ->
-        IO.inspect(snapshot)
+        # IO.inspect(snapshot)
 
       {:error, changeset} ->
         # TODO: Could create a notification / alert for it
-        IO.inspect(changeset)
         false
     end
   end

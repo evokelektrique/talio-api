@@ -54,14 +54,21 @@ defmodule Talio.Branch do
 
     case snapshot.type do
       0 ->
-        if total_branches == 0 || is_nil(branch) do
+        if total_branches === 0 and is_nil(branch) do
           %Branch{}
           |> changeset(create_attrs)
           |> put_assoc(:website, website)
           |> put_assoc(:snapshot, snapshot)
           |> Repo.insert()
         else
-          {:ok, branch}
+          latest_branch =
+            Branch
+            |> limit(1)
+            |> order_by(desc: :inserted_at)
+            |> where(snapshot_id: ^snapshot.id)
+            |> Repo.one()
+
+          {:ok, latest_branch}
         end
 
       1 ->

@@ -15,10 +15,14 @@ defmodule Talio.Screenshot do
   @required_params [:status, :device, :key]
 
   schema "screenshots" do
-    # Screenshot status:
-    # 0: In queue
-    # 1: Completed
+    ## Screenshot status:
+    # 0 => In queue
+    # 1 => Completed
     field :status, :integer, default: 0
+    ## Device Types:
+    # 0 => Desktop
+    # 1 => Tablet
+    # 2 => Mobile
     field :device, :integer, null: false
     # S3 Filename Key
     field :key, :string, null: false

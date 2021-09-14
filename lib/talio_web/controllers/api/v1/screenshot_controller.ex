@@ -7,7 +7,7 @@ defmodule TalioWeb.API.V1.ScreenshotController do
   action_fallback TalioWeb.API.V1.FallbackController
 
   def get_image(conn, %{"key" => key}) do
-    IO.inspect(key)
+    # IO.inspect(key)
 
     bucket = "screenshots"
     destination = key <> ".jpeg"
