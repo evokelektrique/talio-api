@@ -8,8 +8,6 @@ defmodule Talio.Jobs.Screenshot do
 
   require Logger
 
-  @config Application.fetch_env!(:talio, :screenshot)
-
   @impl Oban.Worker
   def perform(%Oban.Job{
         args: %{"key" => key, "options" => options, "screenshot_id" => screenshot_id} = _args
@@ -33,7 +31,8 @@ defmodule Talio.Jobs.Screenshot do
         |> Repo.update!()
 
         # Uplaod Image To MinIO Server
-        Talio.Helpers.Storage.upload(@config.s3.bucket, filename, binary)
+        config = Application.fetch_env!(:talio, :screenshot)
+        Talio.Helpers.Storage.upload(config.s3.bucket, filename, binary)
 
         :ok
 

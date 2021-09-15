@@ -1,4 +1,4 @@
-FROM elixir:1.11-alpine AS build
+FROM hexpm/elixir:1.12.0-erlang-24.0-alpine-3.13.3 AS build
 
 # install build dependencies
 RUN apk add --no-cache build-base npm git python3
@@ -34,8 +34,8 @@ COPY lib lib
 RUN mix do compile, release
 
 # prepare release image
-FROM alpine:3.9 AS app
-RUN apk add --no-cache bash openssl ncurses-libs postgresql-client
+FROM alpine:3.13 AS app
+RUN apk add --no-cache bash openssl postgresql-client ncurses-libs libstdc++
 
 ENV MIX_ENV=prod
 

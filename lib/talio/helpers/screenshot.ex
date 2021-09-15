@@ -6,17 +6,16 @@ defmodule Talio.Helpers.Screenshot do
 
   require Logger
 
-  @config Application.fetch_env!(:talio, :screenshot)
-
   def take(args \\ %{}) do
-    path = @config.url.path
-    args = Map.put(args, :secret_key, @config.secret_key)
+    config = Application.fetch_env!(:talio, :screenshot)
+    path = config.url.path
+    args = Map.put(args, :secret_key, config.secret_key)
 
     # Configure Subdomain From Fandogh Service Name
     url =
       TalioWeb.Endpoint.struct_url()
-      |> Map.put(:host, @config.url.host)
-      |> Map.put(:port, @config.url.port)
+      |> Map.put(:host, config.url.host)
+      |> Map.put(:port, config.url.port)
       |> Map.put(:path, path)
       |> Map.put(:query, URI.encode_query(args))
       |> to_string

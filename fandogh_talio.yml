@@ -1,7 +1,7 @@
 kind: ExternalService
 name: api
 spec:
-  image: talio:1.0
+  image: talio:1.0.0
   image_pull_policy: Always
   replicas: 1
   port: 4000
@@ -24,4 +24,4 @@ spec:
     - name: SCREENSHOT_SECRET_KEY
       secret: screenshot-secret-key
   resources:
-    memory: 200Mi
+    memory: 256Mi

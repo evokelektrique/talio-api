@@ -34,6 +34,23 @@ config :talio, TalioWeb.Endpoint,
   ],
   secret_key_base: secret_key_base
 
+# Fandogh Screenshot service
+screenshot_secrey_key =
+  System.get_env("SCREENSHOT_SECRET_KEY") ||
+    raise "environment variable SCREENSHOT_SECRET_KEY is missing."
+
+config :talio, :screenshot, %{
+  url: %{host: "screenshot.talio.ir", port: 80, path: "/"},
+  s3: %{bucket: "screenshots"},
+  secret_key: screenshot_secrey_key
+}
+
+config :talio, TalioWeb.Endpoint,
+  url: [host: "api.talio.ir", port: 80],
+  force_ssl: [rewrite_on: [:x_forwarded_proto]],
+  check_origin: false,
+  server: true
+
 # ## Using releases (Elixir v1.9+)
 #
 # If you are doing OTP releases, you need to instruct Phoenix
