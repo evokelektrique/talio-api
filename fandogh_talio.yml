@@ -1,7 +1,7 @@
 kind: ExternalService
 name: api
 spec:
-  image: talio:1.0.7
+  image: talio:1.0
   image_pull_policy: Always
   replicas: 1
   port: 4000
@@ -12,7 +12,7 @@ spec:
     - name: SECRET_KEY_BASE
       secret: talio-secret-key-base
     - name: DATABASE_HOST
-      value: timescaledb
+      value: postgresdb
     - name: DATABASE_DB
       value: talio_prod
     - name: DATABASE_USER
