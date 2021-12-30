@@ -5,7 +5,7 @@ defmodule Talio.Repo.Migrations.CreatePageViewsTable do
 		create table(:page_views) do
 			add :talio_user_id, :integer, null: false
 
-			add :snapshot_id, references(:snapshots), null: false
+			add :snapshot_id, references(:snapshots, on_delete: :delete_all), null: false
 
 			timestamps()
 		end

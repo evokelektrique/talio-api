@@ -5,7 +5,7 @@ defmodule Talio.Guards.Snapshot do
   alias Talio.Website
 
   # Admins can list anything
-  def authorize(:user_snapshot, %User{is_admin: 1} = _user, _params), do: :ok
+  def authorize(:user_snapshot, %User{is_admin: true} = _user, _params), do: :ok
 
   # Users can list their own websites
   def authorize(

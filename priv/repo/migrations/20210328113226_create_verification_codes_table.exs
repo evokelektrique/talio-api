@@ -3,7 +3,7 @@ defmodule Talio.Repo.Migrations.CreateVerificationCodesTable do
 
   def up do
   	create table(:verification_codes) do
-  		add :user_id, references(:users), on_delete: :delete_all
+  		add :user_id, references(:users, on_delete: :delete_all)
   		add :code, :integer
       # Is code has been used before?
       add :is_expired, :boolean, default: false

@@ -8,7 +8,7 @@ defmodule Talio.Guards.Branch do
   alias Talio.Branch
 
   # Admins can list anything
-  def authorize(:user_branch, %User{is_admin: 1} = _user, _params), do: :ok
+  def authorize(:user_branch, %User{is_admin: true} = _user, _params), do: :ok
 
   # Users can list their own websites
   def authorize(

@@ -3,7 +3,7 @@ defmodule Talio.Repo.Migrations.CreateSnapshotsTable do
 
   def up do
   	create table(:snapshots) do
-  		add :website_id, references(:websites), null: false
+  		add :website_id, references(:websites, on_delete: :delete_all), null: false
   		add :type, :integer, default: 0, null: false
   		add :status, :integer, default: 0, null: false
   		add :path, :string, null: false

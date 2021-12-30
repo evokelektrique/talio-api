@@ -45,11 +45,30 @@ config :talio, :screenshot, %{
   secret_key: screenshot_secrey_key
 }
 
-config :talio, TalioWeb.Endpoint,
-  url: [host: "api.talio.ir", port: 80],
-  force_ssl: [rewrite_on: [:x_forwarded_proto]],
-  check_origin: false,
-  server: true
+## MinIO
+config :ex_aws,
+  debug_requests: true,
+  region: "local"
+
+minio_access_key =
+  System.get_env("MINIO_ACCESS_KEY") ||
+    raise """
+    environment variable MINIO_ACCESS_KEY is missing.
+    """
+
+minio_secret_access_key =
+  System.get_env("MINIO_SECRET_ACCESS_KEY") ||
+    raise """
+    environment variable MINIO_SECRET_ACCESS_KEY is missing.
+    """
+
+# S3
+config :ex_aws, :s3, %{
+  access_key_id: minio_access_key,
+  secret_access_key: minio_secret_access_key,
+  scheme: "https://",
+  host: "s3.talio.ir"
+}
 
 # ## Using releases (Elixir v1.9+)
 #

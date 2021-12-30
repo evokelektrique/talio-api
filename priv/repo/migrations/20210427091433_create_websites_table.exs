@@ -4,7 +4,7 @@ defmodule Talio.Repo.Migrations.CreateWebsitesTable do
   def up do
   	create table(:websites) do
   		add :category_id, references(:categories)
-  		add :user_id, references(:users)
+  		add :user_id, references(:users, on_delete: :delete_all)
   		add :name, :string, null: false
       add :host, :string, null: false
   		add :url, :string, null: false

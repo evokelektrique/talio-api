@@ -4,7 +4,7 @@ defmodule Talio.Guards.Plan do
   alias Talio.Accounts.User
 
   # Admins can list anything
-  def authorize(:admin_plan, %User{is_admin: 1} = _user, _params), do: :ok
+  def authorize(:admin_plan, %User{is_admin: true} = _user, _params), do: :ok
 
   # Otherwise, denied
   def authorize(:admin_plan, _user, _params), do: :error

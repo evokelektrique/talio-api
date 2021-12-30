@@ -2,9 +2,9 @@ defmodule Talio.Repo.Migrations.CreateBranchesTable do
   use Ecto.Migration
   def up do
   	create table(:branches) do
-  		add :snapshot_id, references(:snapshots), null: false
+  		add :snapshot_id, references(:snapshots, on_delete: :delete_all), null: false
   		add :fingerprint, :string, null: false
-    add :website_id, references(:websites)
+      add :website_id, references(:websites, on_delete: :delete_all)
 
   		timestamps()
   	end

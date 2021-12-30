@@ -3,9 +3,9 @@ defmodule Talio.Repo.Migrations.CreateTransactionsTable do
 
   def up do
   	create table(:transactions) do
-  		add :user_id, references(:users), null: false
-  		add :website_id, references(:websites), null: false
-  		add :plan_id, references(:plans), null: false
+  		add :user_id, references(:users, on_delete: :delete_all), null: false
+  		add :website_id, references(:websites, on_delete: :delete_all), null: false
+  		add :plan_id, references(:plans, on_delete: :delete_all), null: false
   		add :expire, :naive_datetime, null: false
       add :status, :boolean, default: false, null: false
 

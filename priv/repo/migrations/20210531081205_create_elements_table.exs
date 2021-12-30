@@ -19,7 +19,7 @@ defmodule Talio.Repo.Migrations.CreateElementsTable do
   		# 2 => Mobile
   		add :device, 	:integer, null: false
 
-  		add :branch_id, references(:branches), null: false
+  		add :branch_id, references(:branches, on_delete: :delete_all), null: false
 
   		timestamps()
   	end

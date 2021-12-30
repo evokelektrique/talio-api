@@ -3,7 +3,7 @@ defmodule Talio.Repo.Migrations.CreateForgotPasswordsTable do
 
   def up do
   	create table(:forgot_passwords) do
-  		add :user_id, references(:users), on_delete: :delete_all
+  		add :user_id, references(:users, on_delete: :delete_all)
   		add :status, :boolean, default: false
   		add :code, :integer, null: false
   	end

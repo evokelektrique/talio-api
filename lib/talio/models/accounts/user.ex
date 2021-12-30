@@ -16,7 +16,7 @@ defmodule Talio.Accounts.User do
   schema "users" do
     field :email, :string
     field :full_name, :string
-    field :is_admin, :integer, default: 0
+    field :is_admin, :boolean, default: false
     field :password, :string, virtual: true
     field :password_hash, :string
     field :is_verified, :boolean, default: false
